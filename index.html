@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>部屋レイアウト 3D シミュレーター</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛋️</text></svg>">
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.min.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <h1>🛋️ 部屋レイアウト 3D</h1>
+    <nav id="tabs">
+      <button id="tab-2d" class="tab active">✏️ 間取りエディタ</button>
+      <button id="tab-3d" class="tab">🧊 3Dビュー</button>
+    </nav>
+    <div class="topbar-actions">
+      <button id="btn-undo" title="元に戻す (Ctrl+Z)">↩︎</button>
+      <button id="btn-redo" title="やり直す (Ctrl+Shift+Z)">↪︎</button>
+      <span class="sep"></span>
+      <button id="btn-export" title="レイアウトをJSONファイルに保存">💾 書き出し</button>
+      <button id="btn-import" title="JSONファイルから読み込み">📂 読み込み</button>
+      <button id="btn-new" title="すべて消して最初から">🗑 新規</button>
+    </div>
+  </header>
+
+  <!-- ============ 2D エディタ ============ -->
+  <div id="view-2d" class="view active">
+    <aside id="toolbar">
+      <section>
+        <h2>ツール</h2>
+        <button class="tool active" data-tool="select" title="クリックで選択、ドラッグで移動">🖱 選択 / 移動</button>
+        <button class="tool" data-tool="wall" title="クリックで壁の頂点を置いていく。ダブルクリック / Esc で終了">🧱 壁を描く</button>
+        <button class="tool" data-tool="door" title="壁をクリックしてドアを配置">🚪 ドア</button>
+        <button class="tool" data-tool="window" title="壁をクリックして窓を配置">🪟 窓</button>
+      </section>
+      <section>
+        <h2>間取り図（下敷き）</h2>
+        <label class="file-btn">🖼 画像を読み込む<input type="file" id="plan-file" accept="image/*"></label>
+        <button class="tool" data-tool="calibrate" id="btn-calibrate" title="図面上で実寸のわかる2点をクリックし、距離を入力して縮尺を合わせる">📏 縮尺合わせ</button>
+        <label class="slider-row">透明度
+          <input type="range" id="plan-opacity" min="0" max="100" value="45">
+        </label>
+        <button id="btn-plan-remove" class="danger-link">下敷きを削除</button>
+      </section>
+      <section>
+        <h2>家具を追加</h2>
+        <div id="catalog"></div>
+      </section>
+    </aside>
+
+    <main id="canvas-wrap">
+      <canvas id="canvas2d"></canvas>
+      <div id="hint"></div>
+      <div id="zoombar">
+        <button id="zoom-out">−</button>
+        <button id="zoom-fit" title="全体表示">⌂</button>
+        <button id="zoom-in">＋</button>
+      </div>
+    </main>
+
+    <aside id="props">
+      <h2>プロパティ</h2>
+      <div id="props-body"><p class="muted">壁や家具を選択すると、ここでサイズや色を編集できます。</p></div>
+      <section id="room-settings">
+        <h2>部屋の設定</h2>
+        <label>天井高 (cm) <input type="number" id="set-wall-height" min="180" max="400" step="1"></label>
+        <label>壁の厚み (cm) <input type="number" id="set-wall-thickness" min="5" max="40" step="1"></label>
+      </section>
+    </aside>
+  </div>
+
+  <!-- ============ 3D ビュー ============ -->
+  <div id="view-3d" class="view">
+    <main id="three-wrap">
+      <canvas id="canvas3d"></canvas>
+      <div id="view-buttons">
+        <button id="cam-top">⬇ 俯瞰</button>
+        <button id="cam-iso">◇ 斜め</button>
+        <button id="cam-inside">👁 室内</button>
+        <button id="btn-shot">📷 画像保存</button>
+      </div>
+    </main>
+    <aside id="props3d">
+      <h2>写真・テクスチャ</h2>
+      <p class="muted">部屋の写真から床・壁の質感を取り込めます。床材や壁紙が写った部分をトリミングした写真だときれいに貼れます。</p>
+      <label class="file-btn">📸 写真を追加<input type="file" id="photo-file" accept="image/*" multiple></label>
+      <div id="photo-list"></div>
+      <section>
+        <h2>床</h2>
+        <div class="assign-row">
+          <select id="floor-photo"></select>
+          <input type="color" id="floor-color" title="写真を使わない場合の床色">
+        </div>
+        <label class="slider-row">タイル幅 (cm)
+          <input type="number" id="floor-repeat" min="20" max="1000" step="10" value="200">
+        </label>
+      </section>
+      <section>
+        <h2>壁</h2>
+        <div class="assign-row">
+          <select id="wall-photo"></select>
+          <input type="color" id="wall-color" title="写真を使わない場合の壁色">
+        </div>
+        <label class="slider-row">タイル幅 (cm)
+          <input type="number" id="wall-repeat" min="20" max="1000" step="10" value="250">
+        </label>
+      </section>
+      <section>
+        <label class="check-row"><input type="checkbox" id="cutaway" checked> 手前の壁を自動で透かす</label>
+        <label class="check-row"><input type="checkbox" id="show-ceiling"> 天井を表示</label>
+        <label class="check-row"><input type="checkbox" id="show-labels" checked> 家具ラベルを表示</label>
+      </section>
+    </aside>
+  </div>
+</div>
+<input type="file" id="import-file" accept=".json,application/json" hidden>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
