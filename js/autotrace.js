@@ -23,14 +23,33 @@ export function detectWalls(img, pxPerMeter, rotationDeg = 0) {
   ctx.resetTransform();
   const data = ctx.getImageData(0, 0, W, H).data;
 
-  // --- グレースケール + 二値化 (大津の方法、暗い側 = 壁候補) ---
+  // --- グレースケール + 二値化 ---
   const lum = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) {
     lum[i] = (data[i * 4] * 77 + data[i * 4 + 1] * 150 + data[i * 4 + 2] * 29) >> 8;
   }
-  const th = Math.min(otsu(lum), 170);
-  let binary = new Uint8Array(W * H);
-  for (let i = 0; i < W * H; i++) binary[i] = lum[i] < th ? 1 : 0;
+  // 写真は照明ムラがあるため、局所平均に対して暗い画素を壁候補とする
+  // (適応二値化)。うまく取れない画像では大津の方法にフォールバック
+  let binary = adaptiveBinarize(lum, W, H);
+  let darkCount = 0;
+  for (let i = 0; i < W * H; i++) darkCount += binary[i];
+  if (darkCount < W * H * 0.002) {
+    const th = Math.min(otsu(lum), 170);
+    binary = new Uint8Array(W * H);
+    for (let i = 0; i < W * H; i++) binary[i] = lum[i] < th ? 1 : 0;
+  }
+  // 画像の縁の大半が暗い場合(紙を机の上で撮った写真など)のみ、
+  // 縁につながる暗い領域を背景として除去する。縁が明るい画像で
+  // これをやると、縁に接した外周の壁まで消してしまうため
+  let borderDark = 0, borderTotal = 0;
+  for (let x = 0; x < W; x++) { borderDark += binary[x] + binary[(H - 1) * W + x]; borderTotal += 2; }
+  for (let y = 0; y < H; y++) { borderDark += binary[y * W] + binary[y * W + W - 1]; borderTotal += 2; }
+  if (borderDark / borderTotal > 0.35) removeBorderConnected(binary, W, H);
+  // 紙のフチ・影・背景は「壁ではありえない太さ」の塊になる。
+  // 最大厚が閾値を超える連結成分をまるごと除去する
+  // (壁のネットワークは柱・壁芯を含めても半幅 ~15px 程度に収まる)
+  removeThickComponents(binary, W, H, 22);
+  dbg('binary', binary, W, H);
 
   // クロージング半径を変えて試す。クロージングは破線・二重線の壁を拾える
   // 反面、文字も塊になって誤検出されやすい。そこで、最大の検出量に対して
@@ -68,6 +87,7 @@ function detectPass(binaryIn, W, H, closeR, k, pxPerMeter) {
   const coreDist = chamferToSet(core, W, H);
   const mask = new Uint8Array(W * H);
   for (let i = 0; i < W * H; i++) mask[i] = binary[i] && coreDist[i] <= halfW + 1 ? 1 : 0;
+  dbg(`mask-r${closeR}-halfW${halfW.toFixed(1)}`, mask, W, H);
 
   // --- 水平・垂直の帯を抽出 ---
   const minLenPx = Math.max(14, 0.4 * pxPerMeter * k);
@@ -289,6 +309,87 @@ function erode(src, W, H, r) {
   return out;
 }
 
+// 積分画像を使った適応二値化: 周囲の局所平均より十分暗い画素を 1 にする
+function adaptiveBinarize(lum, W, H) {
+  const integ = new Float64Array((W + 1) * (H + 1));
+  for (let y = 0; y < H; y++) {
+    let rowSum = 0;
+    for (let x = 0; x < W; x++) {
+      rowSum += lum[y * W + x];
+      integ[(y + 1) * (W + 1) + (x + 1)] = integ[y * (W + 1) + (x + 1)] + rowSum;
+    }
+  }
+  const win = Math.max(15, Math.round(Math.min(W, H) / 12));
+  const half = win >> 1;
+  const RATIO = 0.82;        // 局所平均の82%未満なら「暗い」
+  const out = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) {
+    const y0 = Math.max(0, y - half), y1 = Math.min(H, y + half + 1);
+    for (let x = 0; x < W; x++) {
+      const x0 = Math.max(0, x - half), x1 = Math.min(W, x + half + 1);
+      const area = (x1 - x0) * (y1 - y0);
+      const sum = integ[y1 * (W + 1) + x1] - integ[y0 * (W + 1) + x1]
+                - integ[y1 * (W + 1) + x0] + integ[y0 * (W + 1) + x0];
+      const mean = sum / area;
+      const v = lum[y * W + x];
+      out[y * W + x] = (v < mean * RATIO && v < 235) ? 1 : 0;
+    }
+  }
+  return out;
+}
+
+// 画像の縁に接している前景成分を消す(紙の外の机・影・フチなど)。
+// 消した画素の集合を返す
+function removeBorderConnected(binary, W, H) {
+  const removed = new Uint8Array(W * H);
+  const stack = [];
+  const push = (x, y) => {
+    const i = y * W + x;
+    if (binary[i]) { binary[i] = 0; removed[i] = 1; stack.push(i); }
+  };
+  for (let x = 0; x < W; x++) { push(x, 0); push(x, H - 1); }
+  for (let y = 0; y < H; y++) { push(0, y); push(W - 1, y); }
+  while (stack.length) {
+    const i = stack.pop();
+    const x = i % W, y = (i / W) | 0;
+    if (x > 0 && binary[i - 1]) { binary[i - 1] = 0; removed[i - 1] = 1; stack.push(i - 1); }
+    if (x < W - 1 && binary[i + 1]) { binary[i + 1] = 0; removed[i + 1] = 1; stack.push(i + 1); }
+    if (y > 0 && binary[i - W]) { binary[i - W] = 0; removed[i - W] = 1; stack.push(i - W); }
+    if (y < H - 1 && binary[i + W]) { binary[i + W] = 0; removed[i + W] = 1; stack.push(i + W); }
+  }
+  return removed;
+}
+
+// 最大厚(距離変換の最大値)が cap を超える連結成分を除去する。
+// 紙のフチ・影・写り込みなどの太い塊は壁ではない
+function removeThickComponents(binary, W, H, cap) {
+  const dist = chamfer(binary, W, H);
+  const visited = new Uint8Array(W * H);
+  const stack = [];
+  const comp = [];
+  for (let start = 0; start < W * H; start++) {
+    if (!binary[start] || visited[start]) continue;
+    // 成分を収集しつつ最大厚を測る
+    comp.length = 0;
+    let maxD = 0;
+    visited[start] = 1;
+    stack.push(start);
+    while (stack.length) {
+      const i = stack.pop();
+      comp.push(i);
+      if (dist[i] > maxD) maxD = dist[i];
+      const x = i % W, y = (i / W) | 0;
+      if (x > 0 && binary[i - 1] && !visited[i - 1]) { visited[i - 1] = 1; stack.push(i - 1); }
+      if (x < W - 1 && binary[i + 1] && !visited[i + 1]) { visited[i + 1] = 1; stack.push(i + 1); }
+      if (y > 0 && binary[i - W] && !visited[i - W]) { visited[i - W] = 1; stack.push(i - W); }
+      if (y < H - 1 && binary[i + W] && !visited[i + W]) { visited[i + W] = 1; stack.push(i + W); }
+    }
+    if (maxD > cap) {
+      for (const i of comp) binary[i] = 0;
+    }
+  }
+}
+
 function otsu(lum) {
   const hist = new Array(256).fill(0);
   for (let i = 0; i < lum.length; i++) hist[lum[i]]++;
@@ -311,3 +412,9 @@ function otsu(lum) {
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 function round2(v) { return Math.round(v * 100) / 100; }
+
+// デバッグ用: window.__traceDebug = [] をセットしておくと中間マスクを収集する
+function dbg(stage, arr, W, H) {
+  if (typeof window === 'undefined' || !window.__traceDebug) return;
+  window.__traceDebug.push({ stage, W, H, data: Array.from(arr) });
+}
