@@ -105,7 +105,8 @@ $('#btn-autotrace').addEventListener('click', () => {
   $('#hint').textContent = '解析中…';
   // ヒント表示を反映してから重い処理を回す
   setTimeout(() => {
-    const segs = detectWalls(editor.planImg, getState().plan.scale);
+    const plan = getState().plan;
+    const segs = detectWalls(editor.planImg, plan.scale, plan.rotation || 0);
     if (!segs.length) {
       $('#hint').textContent = '壁を検出できませんでした。より解像度が高くコントラストのはっきりした画像を試すか、「🧱 壁を描く」で手動でなぞってください';
       return;
@@ -124,6 +125,30 @@ $('#btn-autotrace').addEventListener('click', () => {
 
 $('#plan-opacity').addEventListener('input', e => {
   mutate(s => { s.plan.opacity = e.target.value / 100; }, { undoable: false });
+});
+
+// 傾き補正（±15°）
+$('#plan-rotation').addEventListener('input', e => {
+  const deg = parseFloat(e.target.value) || 0;
+  $('#plan-rotation-val').textContent = `${deg.toFixed(1).replace(/\.0$/, '')}°`;
+  mutate(s => { s.plan.rotation = deg; }, { undoable: false });
+});
+
+// 90°回転（画像データ自体を回転して保存し直す）
+$('#btn-plan-rotate90').addEventListener('click', () => {
+  const img = editor.planImg;
+  if (!img) {
+    $('#hint').textContent = '先に「🖼 画像を読み込む」で間取り図を読み込んでください';
+    return;
+  }
+  const c = document.createElement('canvas');
+  c.width = img.height; c.height = img.width;
+  const ctx = c.getContext('2d');
+  ctx.translate(c.width / 2, c.height / 2);
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(img, -img.width / 2, -img.height / 2);
+  mutate(s => { s.plan.image = c.toDataURL('image/jpeg', 0.9); });
+  editor.syncPlanImage();
 });
 
 $('#btn-plan-remove').addEventListener('click', () => {
@@ -249,6 +274,11 @@ function refreshSettingsInputs() {
   if (document.activeElement !== $('#set-wall-height')) $('#set-wall-height').value = Math.round(s.settings.wallHeight * 100);
   if (document.activeElement !== $('#set-wall-thickness')) $('#set-wall-thickness').value = Math.round(s.settings.wallThickness * 100);
   if (document.activeElement !== $('#plan-opacity')) $('#plan-opacity').value = Math.round(s.plan.opacity * 100);
+  if (document.activeElement !== $('#plan-rotation')) {
+    const deg = s.plan.rotation || 0;
+    $('#plan-rotation').value = deg;
+    $('#plan-rotation-val').textContent = `${deg.toFixed(1).replace(/\.0$/, '')}°`;
+  }
   $('#floor-color').value = s.settings.floorColor;
   $('#wall-color').value = s.settings.wallColor;
   if (document.activeElement !== $('#floor-repeat')) $('#floor-repeat').value = Math.round(s.settings.floorRepeat * 100);

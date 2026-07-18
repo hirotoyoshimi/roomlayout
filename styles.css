@@ -82,6 +82,7 @@ body {
 .slider-row, .check-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 6px 0; }
 .slider-row input[type=range] { flex: 1; }
 .slider-row input[type=number] { width: 70px; }
+.slider-row .val { min-width: 34px; text-align: right; color: var(--muted); }
 
 /* catalog */
 #catalog { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }

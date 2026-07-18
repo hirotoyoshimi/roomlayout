@@ -50,6 +50,11 @@
         <label class="slider-row">透明度
           <input type="range" id="plan-opacity" min="0" max="100" value="45">
         </label>
+        <label class="slider-row" title="斜めに撮れた写真の傾きを補正します（自動検出にも反映）">傾き
+          <input type="range" id="plan-rotation" min="-15" max="15" value="0" step="0.2">
+          <span id="plan-rotation-val" class="val">0°</span>
+        </label>
+        <button class="tool" id="btn-plan-rotate90" title="画像を時計回りに90度回転します">↻ 90°回転</button>
         <button id="btn-plan-remove" class="danger-link">下敷きを削除</button>
       </section>
       <section>

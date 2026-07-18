@@ -4,9 +4,10 @@
 // 帯(バンド)を抽出して線分化 → 角のスナップ。
 // 日本の不動産間取り図のような、壁が太い線で描かれた図面を想定。
 
-// img: デコード済み Image, pxPerMeter: 図面の縮尺 (px/m)
+// img: デコード済み Image, pxPerMeter: 図面の縮尺 (px/m),
+// rotationDeg: 傾き補正 (エディタの表示と同じく画像中心まわり)
 // 戻り値: [{x1,y1,x2,y2}] (メートル、画像左上原点) — 検出失敗時は []
-export function detectWalls(img, pxPerMeter) {
+export function detectWalls(img, pxPerMeter, rotationDeg = 0) {
   const MAX_DIM = 1100;
   const k = Math.min(1, MAX_DIM / Math.max(img.width, img.height));
   const W = Math.max(1, Math.round(img.width * k));
@@ -16,7 +17,10 @@ export function detectWalls(img, pxPerMeter) {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
-  ctx.drawImage(img, 0, 0, W, H);
+  ctx.translate(W / 2, H / 2);
+  ctx.rotate(rotationDeg * Math.PI / 180);
+  ctx.drawImage(img, -W / 2, -H / 2, W, H);
+  ctx.resetTransform();
   const data = ctx.getImageData(0, 0, W, H).data;
 
   // --- グレースケール + 二値化 (大津の方法、暗い側 = 壁候補) ---

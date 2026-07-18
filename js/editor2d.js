@@ -446,13 +446,15 @@ export class Editor2D {
     // グリッド
     this._drawGrid(W, H);
 
-    // 下敷き画像
+    // 下敷き画像（傾き補正は画像中心まわりの回転で適用）
     if (this.planImg) {
       ctx.save();
       ctx.globalAlpha = s.plan.opacity;
       const iw = this.planImg.width / s.plan.scale * v.s;
       const ih = this.planImg.height / s.plan.scale * v.s;
-      ctx.drawImage(this.planImg, v.x, v.y, iw, ih);
+      ctx.translate(v.x + iw / 2, v.y + ih / 2);
+      ctx.rotate((s.plan.rotation || 0) * Math.PI / 180);
+      ctx.drawImage(this.planImg, -iw / 2, -ih / 2, iw, ih);
       ctx.restore();
     }
 

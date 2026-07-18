@@ -22,6 +22,7 @@ export function defaultState() {
       image: null,        // dataURL
       scale: 100,         // 図面画像の px / m
       opacity: 0.45,
+      rotation: 0,        // 傾き補正 (度、画像中心まわり)
     },
     walls: [],            // {id, x1, y1, x2, y2}
     openings: [],         // {id, wallId, type: 'door'|'window', offset(中心, 壁始点から m), width, height, sill}
