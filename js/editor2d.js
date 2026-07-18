@@ -372,9 +372,18 @@ export class Editor2D {
     const cm = parseFloat(input);
     if (!input || !isFinite(cm) || cm <= 0) { this.setTool('select'); return; }
     const real = cm / 100;
+    // 図面からなぞった/自動検出した壁は、新しい縮尺に追従させる
+    const scaleWalls = getState().walls.length > 0 &&
+      confirm('既存の壁や家具の位置も新しい縮尺に合わせて拡大縮小しますか？\n（図面から作った壁は「OK」を推奨）');
     mutate(s => {
       // 現在 dist(m) と測れた区間が実際は real(m)。画像の px/m を補正する
       s.plan.scale = s.plan.scale * dist / real;
+      if (scaleWalls) {
+        const f = real / dist;
+        for (const w of s.walls) { w.x1 *= f; w.y1 *= f; w.x2 *= f; w.y2 *= f; }
+        for (const o of s.openings) o.offset *= f;
+        for (const fu of s.furniture) { fu.x *= f; fu.y *= f; } // 位置のみ。サイズは実寸なので不変
+      }
     });
     this.onHint(`縮尺を設定しました（${cm}cm）。次は「🧱 壁を描く」で図面をなぞってください`);
     this.setTool('select');

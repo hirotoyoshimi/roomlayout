@@ -45,6 +45,7 @@
       <section>
         <h2>間取り図（下敷き）</h2>
         <label class="file-btn">🖼 画像を読み込む<input type="file" id="plan-file" accept="image/*"></label>
+        <button class="tool" id="btn-autotrace" title="画像から太い線を壁として自動検出します。結果は選択・削除・端点ドラッグで修正できます">✨ 壁を自動検出</button>
         <button class="tool" data-tool="calibrate" id="btn-calibrate" title="図面上で実寸のわかる2点をクリックし、距離を入力して縮尺を合わせる">📏 縮尺合わせ</button>
         <label class="slider-row">透明度
           <input type="range" id="plan-opacity" min="0" max="100" value="45">

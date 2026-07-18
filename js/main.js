@@ -7,6 +7,7 @@ import {
 import { CATALOG } from './catalog.js';
 import { Editor2D } from './editor2d.js';
 import { Viewer3D } from './viewer3d.js';
+import { detectWalls } from './autotrace.js';
 
 load();
 
@@ -87,7 +88,38 @@ $('#plan-file').addEventListener('change', async e => {
   const dataURL = await fileToDataURL(file, 1600);
   mutate(s => { s.plan.image = dataURL; });
   editor.syncPlanImage();
-  $('#hint').textContent = '間取り図を読み込みました。「📏 縮尺合わせ」で実寸を設定してから壁をなぞってください';
+  $('#hint').textContent = '間取り図を読み込みました。「✨ 壁を自動検出」で図面から壁を起こせます（手動なら「🧱 壁を描く」）';
+});
+
+// 画像から壁を自動検出
+$('#btn-autotrace').addEventListener('click', () => {
+  if (!editor.planImg) {
+    $('#hint').textContent = '先に「🖼 画像を読み込む」で間取り図を読み込んでください';
+    return;
+  }
+  const s = getState();
+  if (s.walls.length &&
+      !confirm(`既存の壁 ${s.walls.length} 本とドア・窓を削除して、画像から検出し直しますか？`)) {
+    return;
+  }
+  $('#hint').textContent = '解析中…';
+  // ヒント表示を反映してから重い処理を回す
+  setTimeout(() => {
+    const segs = detectWalls(editor.planImg, getState().plan.scale);
+    if (!segs.length) {
+      $('#hint').textContent = '壁を検出できませんでした。より解像度が高くコントラストのはっきりした画像を試すか、「🧱 壁を描く」で手動でなぞってください';
+      return;
+    }
+    mutate(st => {
+      st.walls = segs.map(g => ({ id: genId('w'), ...g }));
+      st.openings = [];
+    });
+    editor.setSelection(null);
+    editor.centerView();
+    $('#hint').textContent =
+      `${segs.length} 本の壁を検出しました。余分な壁は選択して Delete、位置は端点ドラッグで調整。` +
+      '次は「📏 縮尺合わせ」で実寸を設定してください（壁も一緒に拡縮されます）';
+  }, 30);
 });
 
 $('#plan-opacity').addEventListener('input', e => {
