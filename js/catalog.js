@@ -30,6 +30,11 @@ export const REAL_FURNITURE = [
     note: 'IKEA KALLAX シェルフユニット ブラックブラウン (103.518.89)',
   },
   {
+    type: 'kallax_2x4_yoko', label: 'KALLAX 147×77(横)', emoji: '🟫',
+    w: 1.47, d: 0.39, h: 0.77, color: '#4a3c33', shape: 'shelf',
+    note: 'IKEA KALLAX シェルフユニット 77×147 ブラックブラウン (703.518.91) を横向き(サイドボード状)で使用',
+  },
+  {
     type: 'zinus_bed_sd', label: 'ベッドSD(ZINUS)', emoji: '🛏',
     w: 1.20, d: 1.95, h: 0.40, color: '#3a3a3e', shape: 'platform_bed',
     note: 'ZINUS Heavy Duty スチールフレーム18.2cm(ZJ-BF-07 SD ブラック)+ Nスリープ マットレス22cm。計40cm=窓際ベンチと同高',
