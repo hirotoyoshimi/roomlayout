@@ -1,9 +1,10 @@
 // 東京の部屋(1DK・南向き)のプリセット。
-// 実測値入りの間取り図(2026-07 手書き採寸)から書き起こし。
+// 実測値入りの間取り図(2026-07 手書き採寸)+室内写真から書き起こし。
 //
 // 採寸値: 居室幅 2,940 / 窓側の壁〜水回りブロック 5,100 /
-// 掃き出し窓 2,275(+壁680) / 西壁のバルコニー開口 670 /
-// 玄関ドア 800 / キッチン横の棚 685 / 冷蔵庫置場(点線枠) 540。
+// 掃き出し窓 2,275(+壁680) / 西壁のバルコニー開口 670 / 玄関ドア 800。
+// 東壁沿いは北から キッチン → 冷蔵庫置場(685) → 柱(540)。
+// 南の窓沿いに高さ40cmの造り付けベンチ。
 // 水回りブロックの奥行(約1.92m)のみ図の比率からの推定。
 //
 // 座標系: 原点 = 室内の北西角。x: 東(右)+, y: 南(下)+。北が上。
@@ -46,7 +47,8 @@ export function tokyoRoomData() {
     { id: genId('o'), wallId: west.id, type: 'door', offset: 6.64, width: 0.67, height: 1.9, sill: 0.05 },
   ];
 
-  // 動かせない設備(グレー表示・ドラッグ不可)
+  // 動かせない設備(グレー表示・ドラッグ不可)。東壁沿いは北から
+  // キッチン → 冷蔵庫置場 → 柱 の順
   const fixed = [
     {
       // キッチン(東壁沿い、水回りのすぐ南) 長さ約1.6m×奥行0.65
@@ -55,24 +57,26 @@ export function tokyoRoomData() {
       color: '#a8adb3', elev: 0, locked: true,
     },
     {
-      // 冷蔵庫置場(点線枠・幅540)
+      // 冷蔵庫置場(実測685、キッチンのすぐ南)
       id: genId('f'), type: 'custom', label: '冷蔵庫置場',
-      x: W - 0.34, y: 4.6, rot: 0, w: 0.68, d: 0.54, h: 1.8,
+      x: W - 0.34, y: 3.52 + 0.685 / 2, rot: 0, w: 0.68, d: 0.685, h: 1.8,
       color: '#c5c9cd', elev: 0, locked: true,
     },
-  ];
-
-  // 実測済みの手持ち家具(動かせる)
-  const movable = [
     {
-      // キッチンと冷蔵庫置場の間にある棚(実測685)
-      id: genId('f'), type: 'custom', label: '棚(実測685)',
-      x: W - 0.3, y: 3.87, rot: 0, w: 0.6, d: 0.685, h: 0.9,
-      color: '#a3794f', elev: 0, owner: 'me',
+      // 柱(実測540、冷蔵庫置場の南)。床から天井まで
+      id: genId('f'), type: 'custom', label: '柱',
+      x: W - 0.27, y: 4.205 + 0.54 / 2, rot: 0, w: 0.54, d: 0.54, h: 2.4,
+      color: '#8f9296', elev: 0, locked: true,
+    },
+    {
+      // 南の窓沿いの造り付けベンチ(高さ40cm)
+      id: genId('f'), type: 'custom', label: 'ベンチ(固定)',
+      x: 1.14, y: L - 0.25, rot: 0, w: 2.275, d: 0.5, h: 0.4,
+      color: '#b09872', elev: 0, locked: true,
     },
   ];
 
-  return { walls, openings, fixed, movable };
+  return { walls, openings, fixed };
 }
 
 // 状態に東京の部屋を読み込む(壁・開口を置き換え、固定設備を全案に配る)
@@ -84,14 +88,8 @@ export function applyTokyoRoom(state) {
   state.settings.wallHeight = 2.4;
   state.settings.wallThickness = 0.12;
   for (const layout of state.layouts) {
-    // 既存の固定設備を除いてから入れ直す
-    layout.furniture = layout.furniture.filter(f => !f.locked);
+    // 既存の固定設備(と旧版で誤って家具化していた棚)を除いてから入れ直す
+    layout.furniture = layout.furniture.filter(f => !f.locked && f.label !== '棚(実測685)');
     layout.furniture.unshift(...data.fixed.map(f => ({ ...f, id: genId('f') })));
-    // 実測済みの手持ち家具は、まだ入っていない案にだけ足す
-    for (const m of data.movable) {
-      if (!layout.furniture.some(f => f.label === m.label)) {
-        layout.furniture.push({ ...m, id: genId('f') });
-      }
-    }
   }
 }
