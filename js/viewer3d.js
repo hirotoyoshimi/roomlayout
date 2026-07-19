@@ -308,6 +308,15 @@ export function buildFurniture(f) {
   const wood = '#8d6e4e';
 
   switch (shape) {
+    case 'platform_bed': {
+      // ヘッドボードなしの低床ベッド(スチールフレーム+マットレス)
+      const frameH = h * 0.45;
+      g.add(box(w * 0.98, frameH, d * 0.98, '#2c2c30', 0, frameH / 2, 0));
+      g.add(box(w, h * 0.55, d, '#e8e6e0', 0, frameH + h * 0.275, 0));
+      // 枕(ベッドの奥側 = -z)
+      g.add(box(w * 0.5, h * 0.25, d * 0.15, '#ffffff', 0, h + h * 0.1, -d * 0.35));
+      break;
+    }
     case 'bed': {
       const frameH = h * 0.4;
       g.add(box(w, frameH, d, wood, 0, frameH / 2, 0));
