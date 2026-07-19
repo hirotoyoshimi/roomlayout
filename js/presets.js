@@ -2,10 +2,10 @@
 // 実測値入りの間取り図(2026-07 手書き採寸)+室内写真から書き起こし。
 //
 // 採寸値: 居室幅 2,940 / 窓側の壁〜水回りブロック 5,100 /
+// 北東の水回りブロック(洗濯機・トイレ・洗面台・シャワー) 2,140×1,730 /
 // 掃き出し窓 2,275 / 玄関ドア 800 / 南東の隅に柱 680×680。
 // 東壁沿いは北から キッチン(1,250×600×850) → 冷蔵庫置場(685) → 柱(540)。
-// 南の窓沿いに高さ40cmの造り付けベンチ。
-// 水回りブロックの奥行(約1.92m)のみ図の比率からの推定。
+// 南の窓沿いに高さ40cmの造り付けベンチ。すべて実測ベース。
 //
 // 座標系: 原点 = 室内の北西角。x: 東(右)+, y: 南(下)+。北が上。
 
@@ -14,14 +14,14 @@ import { genId } from './state.js';
 export const TOKYO_ROOM = {
   name: '東京の部屋(実測)',
   width: 2.94,    // 内寸幅(西→東) 実測
-  length: 7.02,   // 内寸全長(北→南) = 水回り1.92(推定) + 実測5.10
+  length: 6.83,   // 内寸全長(北→南) = 水回り1.73 + 5.10 (ともに実測)
 };
 
 export function tokyoRoomData() {
   const W = TOKYO_ROOM.width;   // 2.94
-  const L = TOKYO_ROOM.length;  // 7.02
-  const SAN = 1.92;             // 水回りブロックの南端 y(推定)
-  const GENKAN_W = 0.75;        // 玄関・廊下の幅(推定)
+  const L = TOKYO_ROOM.length;  // 6.83
+  const SAN = 1.73;             // 水回りブロックの南端 y(実測 2,140×1,730)
+  const GENKAN_W = W - 2.14;    // 玄関・廊下の幅 = 0.80
 
   const w = (x1, y1, x2, y2) => ({ id: genId('w'), x1, y1, x2, y2 });
 
@@ -36,11 +36,11 @@ export function tokyoRoomData() {
 
   const openings = [
     // 玄関ドア(北壁・西寄り) 実測800
-    { id: genId('o'), wallId: north.id, type: 'door', offset: 0.5, width: 0.8, height: 2.0, sill: 0 },
+    { id: genId('o'), wallId: north.id, type: 'door', offset: 0.45, width: 0.8, height: 2.0, sill: 0 },
     // 水回りへのドア(南壁・東寄り)
     { id: genId('o'), wallId: sanSouth.id, type: 'door', offset: 1.25, width: 0.7, height: 2.0, sill: 0 },
     // 東面の窓(南東の柱のすぐ北)
-    { id: genId('o'), wallId: east.id, type: 'window', offset: 5.9, width: 0.85, height: 1.1, sill: 0.9 },
+    { id: genId('o'), wallId: east.id, type: 'window', offset: 5.72, width: 0.85, height: 1.1, sill: 0.9 },
     // 南の掃き出し窓(バルコニーへ) 実測2275。西端から、東側は南東の柱
     { id: genId('o'), wallId: south.id, type: 'window', offset: 1.14, width: 2.275, height: 2.0, sill: 0.02 },
   ];
