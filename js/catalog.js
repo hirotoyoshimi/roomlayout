@@ -40,6 +40,11 @@ export const REAL_FURNITURE = [
     note: '無印良品 パルプボードボックス・タテヨコA4・3段・ベージュ (4945247549195) を横置き。37.5×29×109',
   },
   {
+    type: 'iron_hanger', label: 'ハンガーラック', emoji: '🧥',
+    w: 0.58, d: 0.30, h: 1.40, color: '#2e2e30', shape: 'hanger',
+    note: '黒のアイアンフレームのハンガーラック 58×30×140',
+  },
+  {
     type: 'zinus_bed_sd', label: 'ベッドSD(ZINUS)', emoji: '🛏',
     w: 1.20, d: 1.95, h: 0.40, color: '#3a3a3e', shape: 'platform_bed',
     note: 'ZINUS Heavy Duty スチールフレーム18.2cm(ZJ-BF-07 SD ブラック)+ Nスリープ マットレス22cm。計40cm=窓際ベンチと同高',

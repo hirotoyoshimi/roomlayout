@@ -20,42 +20,42 @@
   },
   "walls": [
     {
-      "id": "w1_q51ms",
+      "id": "w1_ukz5u",
       "x1": 0,
       "y1": 0,
       "x2": 0,
       "y2": 6.83
     },
     {
-      "id": "w2_bzf72",
+      "id": "w2_3893p",
       "x1": 0,
       "y1": 0,
       "x2": 2.94,
       "y2": 0
     },
     {
-      "id": "w3_7l2nj",
+      "id": "w3_y8wb7",
       "x1": 2.94,
       "y1": 0,
       "x2": 2.94,
       "y2": 6.83
     },
     {
-      "id": "w4_b24x0",
+      "id": "w4_ui27b",
       "x1": 0,
       "y1": 6.83,
       "x2": 2.94,
       "y2": 6.83
     },
     {
-      "id": "w5_a49tb",
+      "id": "w5_uesko",
       "x1": 0.7999999999999998,
       "y1": 0,
       "x2": 0.7999999999999998,
       "y2": 1.73
     },
     {
-      "id": "w6_746vq",
+      "id": "w6_ryuk3",
       "x1": 0.7999999999999998,
       "y1": 1.73,
       "x2": 2.94,
@@ -64,8 +64,8 @@
   ],
   "openings": [
     {
-      "id": "o7_8wosf",
-      "wallId": "w2_bzf72",
+      "id": "o7_g8ax6",
+      "wallId": "w2_3893p",
       "type": "door",
       "offset": 0.45,
       "width": 0.8,
@@ -73,8 +73,8 @@
       "sill": 0
     },
     {
-      "id": "o8_3rggf",
-      "wallId": "w6_746vq",
+      "id": "o8_qkg82",
+      "wallId": "w6_ryuk3",
       "type": "door",
       "offset": 1.25,
       "width": 0.7,
@@ -82,8 +82,8 @@
       "sill": 0
     },
     {
-      "id": "o9_kayi0",
-      "wallId": "w3_7l2nj",
+      "id": "o9_io67e",
+      "wallId": "w3_y8wb7",
       "type": "window",
       "offset": 5.72,
       "width": 0.85,
@@ -91,8 +91,8 @@
       "sill": 0.9
     },
     {
-      "id": "o10_ffncd",
-      "wallId": "w4_b24x0",
+      "id": "o10_xhxsi",
+      "wallId": "w4_ui27b",
       "type": "window",
       "offset": 1.14,
       "width": 2.275,
@@ -106,7 +106,7 @@
       "name": "案A 窓際デッキ",
       "furniture": [
         {
-          "id": "foglpwpz",
+          "id": "f8ko70w1",
           "type": "custom",
           "label": "キッチン(固定)",
           "x": 2.64,
@@ -120,7 +120,7 @@
           "locked": true
         },
         {
-          "id": "fj4ylg0h",
+          "id": "fpt51wbj",
           "type": "custom",
           "label": "冷蔵庫置場",
           "x": 2.6,
@@ -134,7 +134,7 @@
           "locked": true
         },
         {
-          "id": "fxyge2al",
+          "id": "fqh02h17",
           "type": "custom",
           "label": "柱(東)",
           "x": 2.67,
@@ -148,7 +148,7 @@
           "locked": true
         },
         {
-          "id": "fknhkrfk",
+          "id": "fs35jsin",
           "type": "custom",
           "label": "柱(南東)",
           "x": 2.6,
@@ -162,7 +162,7 @@
           "locked": true
         },
         {
-          "id": "fr3mc7wn",
+          "id": "f4exy7ko",
           "type": "custom",
           "label": "ベンチ(固定)",
           "x": 1.14,
@@ -176,7 +176,7 @@
           "locked": true
         },
         {
-          "id": "ffp22n5o",
+          "id": "fbzp31o5",
           "type": "zinus_bed_sd",
           "label": "ベッドSD(ZINUS)",
           "x": 1.05,
@@ -190,7 +190,7 @@
           "owner": "shared"
         },
         {
-          "id": "fzvu44i5",
+          "id": "f2z2uyh6",
           "type": "kallax_4x4",
           "label": "KALLAX 147×147",
           "x": 0.735,
@@ -204,7 +204,7 @@
           "owner": "shared"
         },
         {
-          "id": "fj5bwu0j",
+          "id": "f6fx1hik",
           "type": "kallax_2x4_yoko",
           "label": "KALLAX 147×77(横)",
           "x": 0.195,
@@ -218,7 +218,7 @@
           "owner": "shared"
         },
         {
-          "id": "fu0sorax",
+          "id": "f5fk5iuo",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -232,7 +232,7 @@
           "owner": "shared"
         },
         {
-          "id": "fzvwbqb3",
+          "id": "ffjjjyzl",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -244,6 +244,20 @@
           "color": "#d6c8ad",
           "elev": 0.375,
           "owner": "shared"
+        },
+        {
+          "id": "f7sip970",
+          "type": "iron_hanger",
+          "label": "ハンガーラック",
+          "x": 0.15,
+          "y": 2.16,
+          "rot": 90,
+          "w": 0.58,
+          "d": 0.3,
+          "h": 1.4,
+          "color": "#2e2e30",
+          "elev": 0,
+          "owner": "shared"
         }
       ]
     },
@@ -252,7 +266,7 @@
       "name": "案B 間仕切り寝室",
       "furniture": [
         {
-          "id": "fd7ikzcd",
+          "id": "fe3igdrl",
           "type": "custom",
           "label": "キッチン(固定)",
           "x": 2.64,
@@ -266,7 +280,7 @@
           "locked": true
         },
         {
-          "id": "fwrdvaf2",
+          "id": "fmo3tq7r",
           "type": "custom",
           "label": "冷蔵庫置場",
           "x": 2.6,
@@ -280,7 +294,7 @@
           "locked": true
         },
         {
-          "id": "fudt54ye",
+          "id": "fipl3nef",
           "type": "custom",
           "label": "柱(東)",
           "x": 2.67,
@@ -294,7 +308,7 @@
           "locked": true
         },
         {
-          "id": "f1xni27i",
+          "id": "fye62fg5",
           "type": "custom",
           "label": "柱(南東)",
           "x": 2.6,
@@ -308,7 +322,7 @@
           "locked": true
         },
         {
-          "id": "fmo3mt4u",
+          "id": "fm6g8wiv",
           "type": "custom",
           "label": "ベンチ(固定)",
           "x": 1.14,
@@ -322,7 +336,7 @@
           "locked": true
         },
         {
-          "id": "fmebzeeb",
+          "id": "f40fxw0v",
           "type": "zinus_bed_sd",
           "label": "ベッドSD(ZINUS)",
           "x": 0.62,
@@ -336,7 +350,7 @@
           "owner": "shared"
         },
         {
-          "id": "f5rw165z",
+          "id": "fr070u6b",
           "type": "kallax_4x4",
           "label": "KALLAX 147×147",
           "x": 0.735,
@@ -350,7 +364,7 @@
           "owner": "shared"
         },
         {
-          "id": "fhp8ifbl",
+          "id": "f1u0d1w1",
           "type": "kallax_2x4_yoko",
           "label": "KALLAX 147×77(横)",
           "x": 0.195,
@@ -364,7 +378,7 @@
           "owner": "shared"
         },
         {
-          "id": "fvctsjpb",
+          "id": "f5fk5iuo",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -378,7 +392,7 @@
           "owner": "shared"
         },
         {
-          "id": "f1k3lqfx",
+          "id": "ffjjjyzl",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -390,6 +404,20 @@
           "color": "#d6c8ad",
           "elev": 0.375,
           "owner": "shared"
+        },
+        {
+          "id": "frvi6uzs",
+          "type": "iron_hanger",
+          "label": "ハンガーラック",
+          "x": 0.15,
+          "y": 2.16,
+          "rot": 90,
+          "w": 0.58,
+          "d": 0.3,
+          "h": 1.4,
+          "color": "#2e2e30",
+          "elev": 0,
+          "owner": "shared"
         }
       ]
     },
@@ -398,7 +426,7 @@
       "name": "案C 広間",
       "furniture": [
         {
-          "id": "f4y8ffzm",
+          "id": "f14fegjy",
           "type": "custom",
           "label": "キッチン(固定)",
           "x": 2.64,
@@ -412,7 +440,7 @@
           "locked": true
         },
         {
-          "id": "fs6li4oh",
+          "id": "f6sn0zx2",
           "type": "custom",
           "label": "冷蔵庫置場",
           "x": 2.6,
@@ -426,7 +454,7 @@
           "locked": true
         },
         {
-          "id": "frmsey65",
+          "id": "f4fgk4aa",
           "type": "custom",
           "label": "柱(東)",
           "x": 2.67,
@@ -440,7 +468,7 @@
           "locked": true
         },
         {
-          "id": "fynyfd9y",
+          "id": "fe88r7uw",
           "type": "custom",
           "label": "柱(南東)",
           "x": 2.6,
@@ -454,7 +482,7 @@
           "locked": true
         },
         {
-          "id": "fgfszppe",
+          "id": "fmu9wif9",
           "type": "custom",
           "label": "ベンチ(固定)",
           "x": 1.14,
@@ -468,7 +496,7 @@
           "locked": true
         },
         {
-          "id": "fnt9szc2",
+          "id": "fiacr604",
           "type": "zinus_bed_sd",
           "label": "ベッドSD(ZINUS)",
           "x": 1.05,
@@ -482,7 +510,7 @@
           "owner": "shared"
         },
         {
-          "id": "fw50w76k",
+          "id": "fbsfxq4v",
           "type": "kallax_4x4",
           "label": "KALLAX 147×147",
           "x": 0.195,
@@ -496,7 +524,7 @@
           "owner": "shared"
         },
         {
-          "id": "f3ugag40",
+          "id": "fvvvxjeq",
           "type": "kallax_2x4_yoko",
           "label": "KALLAX 147×77(横)",
           "x": 0.195,
@@ -510,7 +538,7 @@
           "owner": "shared"
         },
         {
-          "id": "f16ipqut",
+          "id": "f5fk5iuo",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -524,7 +552,7 @@
           "owner": "shared"
         },
         {
-          "id": "fq0ydb0w",
+          "id": "ffjjjyzl",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -535,6 +563,20 @@
           "h": 0.375,
           "color": "#d6c8ad",
           "elev": 0.375,
+          "owner": "shared"
+        },
+        {
+          "id": "f7pyfswp",
+          "type": "iron_hanger",
+          "label": "ハンガーラック",
+          "x": 1.19,
+          "y": 1.88,
+          "rot": 0,
+          "w": 0.58,
+          "d": 0.3,
+          "h": 1.4,
+          "color": "#2e2e30",
+          "elev": 0,
           "owner": "shared"
         }
       ]

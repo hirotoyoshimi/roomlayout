@@ -392,6 +392,23 @@ export function buildFurniture(f) {
       g.add(box(tvW * 0.2, 0.05, d * 0.4, '#333', 0, h + 0.025, 0));
       break;
     }
+    case 'hanger': {
+      // アイアンフレームのハンガーラック: 四隅の細い脚 + トップバー + 下段バー
+      const post = 0.02;
+      for (const sx of [-1, 1]) {
+        for (const sz of [-1, 1]) {
+          g.add(box(post, h, post, color,
+            sx * (w / 2 - post / 2), h / 2, sz * (d / 2 - post / 2)));
+        }
+        // 左右の上部フレーム(奥行方向)
+        g.add(box(post, post, d, color, sx * (w / 2 - post / 2), h - post / 2, 0));
+      }
+      // ハンガーバー(幅方向)
+      g.add(box(w - post, post, post, color, 0, h - post * 1.5, 0));
+      // 下段の棚バー
+      g.add(box(w - post * 2, 0.015, d - post, shade(color, 0.15), 0, 0.15, 0));
+      break;
+    }
     case 'plant': {
       const potH = h * 0.25;
       const pot = new THREE.Mesh(
