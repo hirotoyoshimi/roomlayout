@@ -392,6 +392,27 @@ export function buildFurniture(f) {
       g.add(box(tvW * 0.2, 0.05, d * 0.4, '#333', 0, h + 0.025, 0));
       break;
     }
+    case 'open_wardrobe': {
+      // スチールユニットシェルフのワードローブ: 左右のラダーフレーム +
+      // 天板 + ハンガーバー + 下段棚
+      const post = 0.025;
+      for (const sx of [-1, 1]) {
+        for (const sz of [-1, 1]) {
+          g.add(box(post, h, post, color,
+            sx * (w / 2 - post / 2), h / 2, sz * (d / 2 - post / 2)));
+        }
+        // 側面の横桟
+        for (const yy of [0.12, h * 0.5, h - 0.06]) {
+          g.add(box(post, post, d - post, color, sx * (w / 2 - post / 2), yy, 0));
+        }
+      }
+      // 天板と下段棚(明るい木目)
+      g.add(box(w, 0.02, d, '#d8cdb8', 0, h - 0.01, 0));
+      g.add(box(w - post * 2, 0.02, d - post, '#d8cdb8', 0, 0.13, 0));
+      // ハンガーバー
+      g.add(box(w - post * 2, 0.02, 0.02, shade(color, -0.15), 0, h - 0.12, 0));
+      break;
+    }
     case 'hanger': {
       // ミニマルなアイアンフレームのハンガーラック(KANADEMONO RAC-101風):
       // 1枚の長方形フレームが立ち、足元だけ前後に足が伸びる

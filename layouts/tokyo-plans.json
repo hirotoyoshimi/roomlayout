@@ -20,42 +20,42 @@
   },
   "walls": [
     {
-      "id": "w1_ukz5u",
+      "id": "w1_g6zh7",
       "x1": 0,
       "y1": 0,
       "x2": 0,
       "y2": 6.83
     },
     {
-      "id": "w2_3893p",
+      "id": "w2_dkq8n",
       "x1": 0,
       "y1": 0,
       "x2": 2.94,
       "y2": 0
     },
     {
-      "id": "w3_y8wb7",
+      "id": "w3_ig4d2",
       "x1": 2.94,
       "y1": 0,
       "x2": 2.94,
       "y2": 6.83
     },
     {
-      "id": "w4_ui27b",
+      "id": "w4_olpkb",
       "x1": 0,
       "y1": 6.83,
       "x2": 2.94,
       "y2": 6.83
     },
     {
-      "id": "w5_uesko",
+      "id": "w5_905jw",
       "x1": 0.7999999999999998,
       "y1": 0,
       "x2": 0.7999999999999998,
       "y2": 1.73
     },
     {
-      "id": "w6_ryuk3",
+      "id": "w6_4cbeo",
       "x1": 0.7999999999999998,
       "y1": 1.73,
       "x2": 2.94,
@@ -64,8 +64,8 @@
   ],
   "openings": [
     {
-      "id": "o7_g8ax6",
-      "wallId": "w2_3893p",
+      "id": "o7_vz1zv",
+      "wallId": "w2_dkq8n",
       "type": "door",
       "offset": 0.45,
       "width": 0.8,
@@ -73,8 +73,8 @@
       "sill": 0
     },
     {
-      "id": "o8_qkg82",
-      "wallId": "w6_ryuk3",
+      "id": "o8_y8hze",
+      "wallId": "w6_4cbeo",
       "type": "door",
       "offset": 1.25,
       "width": 0.7,
@@ -82,8 +82,8 @@
       "sill": 0
     },
     {
-      "id": "o9_io67e",
-      "wallId": "w3_y8wb7",
+      "id": "o9_bm9af",
+      "wallId": "w3_ig4d2",
       "type": "window",
       "offset": 5.72,
       "width": 0.85,
@@ -91,8 +91,8 @@
       "sill": 0.9
     },
     {
-      "id": "o10_xhxsi",
-      "wallId": "w4_ui27b",
+      "id": "o10_ixaow",
+      "wallId": "w4_olpkb",
       "type": "window",
       "offset": 1.14,
       "width": 2.275,
@@ -106,7 +106,7 @@
       "name": "案A 窓際デッキ",
       "furniture": [
         {
-          "id": "f8ko70w1",
+          "id": "f4ssuzom",
           "type": "custom",
           "label": "キッチン(固定)",
           "x": 2.64,
@@ -120,7 +120,7 @@
           "locked": true
         },
         {
-          "id": "fpt51wbj",
+          "id": "fybnyk2y",
           "type": "custom",
           "label": "冷蔵庫置場",
           "x": 2.6,
@@ -134,7 +134,7 @@
           "locked": true
         },
         {
-          "id": "fqh02h17",
+          "id": "fnds1jfx",
           "type": "custom",
           "label": "柱(東)",
           "x": 2.67,
@@ -148,7 +148,7 @@
           "locked": true
         },
         {
-          "id": "fs35jsin",
+          "id": "fzt24e0d",
           "type": "custom",
           "label": "柱(南東)",
           "x": 2.6,
@@ -162,7 +162,7 @@
           "locked": true
         },
         {
-          "id": "f4exy7ko",
+          "id": "fms7uqcw",
           "type": "custom",
           "label": "ベンチ(固定)",
           "x": 1.14,
@@ -176,7 +176,7 @@
           "locked": true
         },
         {
-          "id": "fbzp31o5",
+          "id": "fka6rr45",
           "type": "zinus_bed_sd",
           "label": "ベッドSD(ZINUS)",
           "x": 1.05,
@@ -190,7 +190,7 @@
           "owner": "shared"
         },
         {
-          "id": "f2z2uyh6",
+          "id": "f2nffxpr",
           "type": "kallax_4x4",
           "label": "KALLAX 147×147",
           "x": 0.735,
@@ -204,7 +204,7 @@
           "owner": "shared"
         },
         {
-          "id": "f6fx1hik",
+          "id": "fn00xkpb",
           "type": "kallax_2x4_yoko",
           "label": "KALLAX 147×77(横)",
           "x": 0.195,
@@ -218,7 +218,7 @@
           "owner": "shared"
         },
         {
-          "id": "f5fk5iuo",
+          "id": "frgv7p1n",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -232,7 +232,7 @@
           "owner": "shared"
         },
         {
-          "id": "ffjjjyzl",
+          "id": "f8pprwyo",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -246,16 +246,30 @@
           "owner": "shared"
         },
         {
-          "id": "f7sip970",
+          "id": "f7mcvcb6",
           "type": "iron_hanger",
           "label": "ハンガーラック",
-          "x": 0.15,
+          "x": 0.16,
           "y": 2.16,
           "rot": 90,
           "w": 0.58,
           "d": 0.3,
           "h": 1.4,
           "color": "#2e2e30",
+          "elev": 0,
+          "owner": "shared"
+        },
+        {
+          "id": "f3744roi",
+          "type": "muji_unit_wardrobe",
+          "label": "ユニットワードローブ",
+          "x": 1.25,
+          "y": 1.94,
+          "rot": 0,
+          "w": 0.86,
+          "d": 0.41,
+          "h": 1.755,
+          "color": "#b8bcc0",
           "elev": 0,
           "owner": "shared"
         }
@@ -266,7 +280,7 @@
       "name": "案B 間仕切り寝室",
       "furniture": [
         {
-          "id": "fe3igdrl",
+          "id": "fe77u9s9",
           "type": "custom",
           "label": "キッチン(固定)",
           "x": 2.64,
@@ -280,7 +294,7 @@
           "locked": true
         },
         {
-          "id": "fmo3tq7r",
+          "id": "fgargasd",
           "type": "custom",
           "label": "冷蔵庫置場",
           "x": 2.6,
@@ -294,7 +308,7 @@
           "locked": true
         },
         {
-          "id": "fipl3nef",
+          "id": "f6frat8y",
           "type": "custom",
           "label": "柱(東)",
           "x": 2.67,
@@ -308,7 +322,7 @@
           "locked": true
         },
         {
-          "id": "fye62fg5",
+          "id": "fpw2awki",
           "type": "custom",
           "label": "柱(南東)",
           "x": 2.6,
@@ -322,7 +336,7 @@
           "locked": true
         },
         {
-          "id": "fm6g8wiv",
+          "id": "f9aq8913",
           "type": "custom",
           "label": "ベンチ(固定)",
           "x": 1.14,
@@ -336,7 +350,7 @@
           "locked": true
         },
         {
-          "id": "f40fxw0v",
+          "id": "f82f774p",
           "type": "zinus_bed_sd",
           "label": "ベッドSD(ZINUS)",
           "x": 0.62,
@@ -350,7 +364,7 @@
           "owner": "shared"
         },
         {
-          "id": "fr070u6b",
+          "id": "fttb1y18",
           "type": "kallax_4x4",
           "label": "KALLAX 147×147",
           "x": 0.735,
@@ -364,7 +378,7 @@
           "owner": "shared"
         },
         {
-          "id": "f1u0d1w1",
+          "id": "fffd6am8",
           "type": "kallax_2x4_yoko",
           "label": "KALLAX 147×77(横)",
           "x": 0.195,
@@ -378,7 +392,7 @@
           "owner": "shared"
         },
         {
-          "id": "f5fk5iuo",
+          "id": "frgv7p1n",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -392,7 +406,7 @@
           "owner": "shared"
         },
         {
-          "id": "ffjjjyzl",
+          "id": "f8pprwyo",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -406,16 +420,30 @@
           "owner": "shared"
         },
         {
-          "id": "frvi6uzs",
+          "id": "ffydlc9r",
           "type": "iron_hanger",
           "label": "ハンガーラック",
-          "x": 0.15,
+          "x": 0.16,
           "y": 2.16,
           "rot": 90,
           "w": 0.58,
           "d": 0.3,
           "h": 1.4,
           "color": "#2e2e30",
+          "elev": 0,
+          "owner": "shared"
+        },
+        {
+          "id": "f3gi1sgl",
+          "type": "muji_unit_wardrobe",
+          "label": "ユニットワードローブ",
+          "x": 1.25,
+          "y": 1.94,
+          "rot": 0,
+          "w": 0.86,
+          "d": 0.41,
+          "h": 1.755,
+          "color": "#b8bcc0",
           "elev": 0,
           "owner": "shared"
         }
@@ -426,7 +454,7 @@
       "name": "案C 広間",
       "furniture": [
         {
-          "id": "f14fegjy",
+          "id": "ffmcigw6",
           "type": "custom",
           "label": "キッチン(固定)",
           "x": 2.64,
@@ -440,7 +468,7 @@
           "locked": true
         },
         {
-          "id": "f6sn0zx2",
+          "id": "f3uhd7z6",
           "type": "custom",
           "label": "冷蔵庫置場",
           "x": 2.6,
@@ -454,7 +482,7 @@
           "locked": true
         },
         {
-          "id": "f4fgk4aa",
+          "id": "fgv99nca",
           "type": "custom",
           "label": "柱(東)",
           "x": 2.67,
@@ -468,7 +496,7 @@
           "locked": true
         },
         {
-          "id": "fe88r7uw",
+          "id": "fw1i7827",
           "type": "custom",
           "label": "柱(南東)",
           "x": 2.6,
@@ -482,7 +510,7 @@
           "locked": true
         },
         {
-          "id": "fmu9wif9",
+          "id": "fx14a9nh",
           "type": "custom",
           "label": "ベンチ(固定)",
           "x": 1.14,
@@ -496,7 +524,7 @@
           "locked": true
         },
         {
-          "id": "fiacr604",
+          "id": "fj8n6jox",
           "type": "zinus_bed_sd",
           "label": "ベッドSD(ZINUS)",
           "x": 1.05,
@@ -510,7 +538,7 @@
           "owner": "shared"
         },
         {
-          "id": "fbsfxq4v",
+          "id": "fbv6jcia",
           "type": "kallax_4x4",
           "label": "KALLAX 147×147",
           "x": 0.195,
@@ -524,7 +552,7 @@
           "owner": "shared"
         },
         {
-          "id": "fvvvxjeq",
+          "id": "fonovuqu",
           "type": "kallax_2x4_yoko",
           "label": "KALLAX 147×77(横)",
           "x": 0.195,
@@ -538,7 +566,7 @@
           "owner": "shared"
         },
         {
-          "id": "f5fk5iuo",
+          "id": "frgv7p1n",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -552,7 +580,7 @@
           "owner": "shared"
         },
         {
-          "id": "ffjjjyzl",
+          "id": "f8pprwyo",
           "type": "muji_pulp_3",
           "label": "パルプボックス(横)",
           "x": 2.795,
@@ -566,16 +594,30 @@
           "owner": "shared"
         },
         {
-          "id": "f7pyfswp",
+          "id": "fqx4gndm",
           "type": "iron_hanger",
           "label": "ハンガーラック",
-          "x": 1.19,
-          "y": 1.88,
-          "rot": 0,
+          "x": 0.16,
+          "y": 4,
+          "rot": 90,
           "w": 0.58,
           "d": 0.3,
           "h": 1.4,
           "color": "#2e2e30",
+          "elev": 0,
+          "owner": "shared"
+        },
+        {
+          "id": "fja5rzrw",
+          "type": "muji_unit_wardrobe",
+          "label": "ユニットワードローブ",
+          "x": 1.25,
+          "y": 1.94,
+          "rot": 0,
+          "w": 0.86,
+          "d": 0.41,
+          "h": 1.755,
+          "color": "#b8bcc0",
           "elev": 0,
           "owner": "shared"
         }

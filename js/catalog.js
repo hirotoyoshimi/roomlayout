@@ -45,6 +45,11 @@ export const REAL_FURNITURE = [
     note: '黒のアイアンフレームのハンガーラック 58×30×140(KANADEMONO ミニマルアート ハンガーラック RAC-101 のようなタイプ)',
   },
   {
+    type: 'muji_unit_wardrobe', label: 'ユニットワードローブ', emoji: '👔',
+    w: 0.86, d: 0.41, h: 1.755, color: '#b8bcc0', shape: 'open_wardrobe',
+    note: '無印良品 スチールユニットシェルフ ワードローブセット ライトグレー (4550344504734) 86×41×175.5【購入予定】',
+  },
+  {
     type: 'zinus_bed_sd', label: 'ベッドSD(ZINUS)', emoji: '🛏',
     w: 1.20, d: 1.95, h: 0.40, color: '#3a3a3e', shape: 'platform_bed',
     note: 'ZINUS Heavy Duty スチールフレーム18.2cm(ZJ-BF-07 SD ブラック)+ Nスリープ マットレス22cm。計40cm=窓際ベンチと同高',
