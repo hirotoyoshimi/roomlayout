@@ -42,7 +42,7 @@ export const REAL_FURNITURE = [
   {
     type: 'iron_hanger', label: 'ハンガーラック', emoji: '🧥',
     w: 0.58, d: 0.30, h: 1.40, color: '#2e2e30', shape: 'hanger',
-    note: '黒のアイアンフレームのハンガーラック 58×30×140',
+    note: '黒のアイアンフレームのハンガーラック 58×30×140(KANADEMONO ミニマルアート ハンガーラック RAC-101 のようなタイプ)',
   },
   {
     type: 'zinus_bed_sd', label: 'ベッドSD(ZINUS)', emoji: '🛏',
