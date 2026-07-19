@@ -2,12 +2,13 @@
 
 import {
   getState, load, mutate, undo, redo, resetAll,
-  exportJSON, importJSON, onChange, genId, wallLength,
+  exportJSON, importJSON, onChange, genId, wallLength, activeFurniture,
 } from './state.js';
 import { CATALOG } from './catalog.js';
 import { Editor2D } from './editor2d.js';
 import { Viewer3D } from './viewer3d.js';
 import { detectWalls } from './autotrace.js';
+import { applyTokyoRoom, TOKYO_ROOM } from './presets.js';
 
 load();
 
@@ -50,6 +51,7 @@ onChange(() => {
   editor.render();
   refreshSettingsInputs();
   renderPhotoUI();
+  renderLayoutUI();
   // 選択中オブジェクトが消えた場合に備えて選択を検証
   if (editor.selection && !editor.getSelected()) editor.setSelection(null);
   if (mode3d && !rebuildQueued) {
@@ -78,6 +80,120 @@ for (const c of CATALOG) {
   btn.title = `${Math.round(c.w * 100)}×${Math.round(c.d * 100)}×${Math.round(c.h * 100)}cm`;
   btn.addEventListener('click', () => { editor.addFurniture(c.type); resetToolUI(); });
   $('#catalog').appendChild(btn);
+}
+
+// ---------- レイアウト案の管理 ----------
+function renderLayoutUI() {
+  const s = getState();
+  const sel = $('#layout-select');
+  sel.innerHTML = '';
+  for (const l of s.layouts) {
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.textContent = `${l.name}（家具${l.furniture.filter(f => !f.locked).length}点）`;
+    sel.appendChild(opt);
+  }
+  sel.value = s.activeLayoutId;
+}
+
+$('#layout-select').addEventListener('change', e => {
+  editor.setSelection(null);
+  mutate(s => { s.activeLayoutId = e.target.value; });
+});
+
+$('#layout-dup').addEventListener('click', () => {
+  const s = getState();
+  const cur = s.layouts.find(l => l.id === s.activeLayoutId);
+  const name = prompt('新しい案の名前', `${cur.name}のコピー`);
+  if (!name) return;
+  const copy = {
+    id: genId('L'),
+    name,
+    furniture: cur.furniture.map(f => ({ ...f, id: genId('f') })),
+  };
+  mutate(st => {
+    st.layouts.push(copy);
+    st.activeLayoutId = copy.id;
+  });
+});
+
+$('#layout-rename').addEventListener('click', () => {
+  const s = getState();
+  const cur = s.layouts.find(l => l.id === s.activeLayoutId);
+  const name = prompt('案の名前', cur.name);
+  if (!name) return;
+  mutate(() => { cur.name = name; });
+});
+
+$('#layout-del').addEventListener('click', () => {
+  const s = getState();
+  if (s.layouts.length <= 1) { alert('最後の案は削除できません'); return; }
+  const cur = s.layouts.find(l => l.id === s.activeLayoutId);
+  if (!confirm(`「${cur.name}」を削除しますか？`)) return;
+  editor.setSelection(null);
+  mutate(st => {
+    st.layouts = st.layouts.filter(l => l.id !== cur.id);
+    st.activeLayoutId = st.layouts[0].id;
+  });
+});
+
+// ---------- 部屋(東京の部屋プリセット / 実寸補正) ----------
+$('#btn-tokyo').addEventListener('click', () => {
+  if (getState().walls.length &&
+      !confirm('壁・ドア・窓を東京の部屋のデータで置き換えます。家具の配置は残ります。よろしいですか？')) {
+    return;
+  }
+  editor.setSelection(null);
+  mutate(s => applyTokyoRoom(s));
+  editor.centerView();
+  $('#hint').textContent =
+    `東京の部屋(内寸 幅${TOKYO_ROOM.width}m×奥行${TOKYO_ROOM.length}m と推定)を読み込みました。` +
+    '実測したら「📐 実寸補正」で合わせられます';
+});
+
+$('#btn-rescale').addEventListener('click', () => {
+  const s = getState();
+  if (!s.walls.length) { $('#hint').textContent = '先に部屋を読み込んでください'; return; }
+  const b = wallsBoundsLocal(s);
+  const curW = Math.round((b.maxX - b.minX) * 100);
+  const curL = Math.round((b.maxY - b.minY) * 100);
+  const wIn = prompt(`部屋の幅(西→東)の実測値をcmで入力してください\n（現在のモデル: ${curW}cm）`, curW);
+  if (!wIn) return;
+  const lIn = prompt(`部屋の奥行(北→南、玄関側の壁から窓側の壁まで)の実測値をcmで入力してください\n（現在のモデル: ${curL}cm）`, curL);
+  if (!lIn) return;
+  const newW = parseFloat(wIn), newL = parseFloat(lIn);
+  if (!isFinite(newW) || !isFinite(newL) || newW < 100 || newL < 100) return;
+  const sx = (newW / 100) / (b.maxX - b.minX);
+  const sy = (newL / 100) / (b.maxY - b.minY);
+  mutate(st => {
+    for (const w of st.walls) {
+      w.x1 = (w.x1 - b.minX) * sx + b.minX; w.x2 = (w.x2 - b.minX) * sx + b.minX;
+      w.y1 = (w.y1 - b.minY) * sy + b.minY; w.y2 = (w.y2 - b.minY) * sy + b.minY;
+    }
+    for (const o of st.openings) {
+      const w = st.walls.find(x => x.id === o.wallId);
+      if (!w) continue;
+      // 壁の向きに応じて開口の位置をスケール(幅は実寸なので不変)
+      o.offset *= Math.abs(w.x2 - w.x1) > Math.abs(w.y2 - w.y1) ? sx : sy;
+    }
+    for (const lay of st.layouts) {
+      for (const f of lay.furniture) {
+        f.x = (f.x - b.minX) * sx + b.minX;
+        f.y = (f.y - b.minY) * sy + b.minY;
+      }
+    }
+  });
+  editor.centerView();
+  $('#hint').textContent = `部屋を ${wIn}cm × ${lIn}cm に補正しました`;
+});
+
+function wallsBoundsLocal(s) {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const w of s.walls) {
+    minX = Math.min(minX, w.x1, w.x2); maxX = Math.max(maxX, w.x1, w.x2);
+    minY = Math.min(minY, w.y1, w.y2); maxY = Math.max(maxY, w.y1, w.y2);
+  }
+  return { minX, minY, maxX, maxY };
 }
 
 // ---------- 間取り図（下敷き） ----------
@@ -207,13 +323,30 @@ function renderProps() {
     color.addEventListener('change', () => mutate(() => { obj.color = color.value; }));
     row('色', color);
 
+    const owner = document.createElement('select');
+    for (const [v, t] of [['shared', '共用'], ['me', '自分'], ['roommate', '同居人']]) {
+      const opt = document.createElement('option');
+      opt.value = v; opt.textContent = t;
+      owner.appendChild(opt);
+    }
+    owner.value = obj.owner || 'shared';
+    owner.addEventListener('change', () => mutate(() => { obj.owner = owner.value; }));
+    row('所有', owner);
+
+    if (obj.locked) {
+      const p = document.createElement('p');
+      p.className = 'muted';
+      p.textContent = '固定設備のため動かせません（削除は可能）。';
+      body.appendChild(p);
+    }
+
     const btns = document.createElement('div');
     btns.className = 'btn-row';
     const dup = document.createElement('button');
     dup.textContent = '⧉ 複製';
     dup.addEventListener('click', () => {
       const copy = { ...obj, id: genId('f'), x: obj.x + 0.3, y: obj.y + 0.3 };
-      mutate(s => s.furniture.push(copy));
+      mutate(s => activeFurniture(s).push(copy));
       editor.setSelection({ kind: 'furniture', id: copy.id });
     });
     const del = document.createElement('button');
@@ -459,6 +592,18 @@ async function fileToDataURL(file, maxSize) {
 window.__app = { editor, viewer, getState };
 
 // ---------- 初期化 ----------
+// 初回起動(保存データなし)は東京の部屋を自動で読み込む
+{
+  const s = getState();
+  const empty = !s.walls.length && s.layouts.every(l => !l.furniture.length) && !s.plan.image;
+  if (empty) {
+    mutate(st => applyTokyoRoom(st), { undoable: false });
+    $('#hint').textContent =
+      `東京の部屋(内寸 幅${TOKYO_ROOM.width}m×奥行${TOKYO_ROOM.length}m と推定)を読み込みました。` +
+      '寸法を実測したら「📐 実寸補正」で正確に合わせられます';
+  }
+}
+renderLayoutUI();
 refreshSettingsInputs();
 renderPhotoUI();
 renderProps(null);

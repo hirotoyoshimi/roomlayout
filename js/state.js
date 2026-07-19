@@ -26,9 +26,22 @@ export function defaultState() {
     },
     walls: [],            // {id, x1, y1, x2, y2}
     openings: [],         // {id, wallId, type: 'door'|'window', offset(中心, 壁始点から m), width, height, sill}
-    furniture: [],        // {id, type, label, x, y(中心), rot(度), w, d, h, color, elev}
+    // レイアウト案: 部屋(壁・開口)は共通、家具の配置だけが案ごとに変わる
+    layouts: [{ id: 'L1', name: '案A', furniture: [] }],
+    activeLayoutId: 'L1',
     photos: [],           // {id, name, data(dataURL)}
   };
+}
+
+// アクティブなレイアウト案
+export function activeLayout(s = state) {
+  return s.layouts.find(l => l.id === s.activeLayoutId) || s.layouts[0];
+}
+
+// アクティブな案の家具リスト
+// 家具: {id, type, label, x, y(中心), rot(度), w, d, h, color, elev, owner?, locked?}
+export function activeFurniture(s = state) {
+  return activeLayout(s).furniture;
 }
 
 let state = defaultState();
@@ -110,13 +123,31 @@ function save() {
   }, 400);
 }
 
+// 旧形式(furniture がトップレベル)を layouts 形式へ移行
+function migrate(s) {
+  if (Array.isArray(s.furniture)) {
+    if (!Array.isArray(s.layouts) || !s.layouts.length) {
+      s.layouts = [{ id: 'L1', name: '案A', furniture: s.furniture }];
+      s.activeLayoutId = 'L1';
+    }
+    delete s.furniture;
+  }
+  if (!Array.isArray(s.layouts) || !s.layouts.length) {
+    s.layouts = [{ id: 'L1', name: '案A', furniture: [] }];
+  }
+  if (!s.layouts.find(l => l.id === s.activeLayoutId)) {
+    s.activeLayoutId = s.layouts[0].id;
+  }
+  return s;
+}
+
 export function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.version === 1) {
-        state = Object.assign(defaultState(), parsed);
+        state = migrate(Object.assign(defaultState(), parsed));
         state.settings = Object.assign(defaultState().settings, parsed.settings || {});
         state.plan = Object.assign(defaultState().plan, parsed.plan || {});
       }
@@ -151,7 +182,7 @@ export function importJSON(text) {
     throw new Error('このファイルは部屋レイアウトのデータではないようです');
   }
   pushUndo();
-  state = Object.assign(defaultState(), parsed);
+  state = migrate(Object.assign(defaultState(), parsed));
   state.settings = Object.assign(defaultState().settings, parsed.settings || {});
   state.plan = Object.assign(defaultState().plan, parsed.plan || {});
   save();

@@ -3,7 +3,7 @@
 
 import * as THREE from 'three';
 import { OrbitControls } from '../vendor/OrbitControls.js';
-import { getState, wallLength, wallsBounds } from './state.js';
+import { getState, wallLength, wallsBounds, activeFurniture } from './state.js';
 import { catalogItem } from './catalog.js';
 
 export class Viewer3D {
@@ -193,7 +193,7 @@ export class Viewer3D {
     }
 
     // 家具
-    for (const f of s.furniture) {
+    for (const f of activeFurniture(s)) {
       const g = buildFurniture(f);
       g.position.set(f.x, f.elev || 0, f.y);
       g.rotation.y = -f.rot * Math.PI / 180;
@@ -208,9 +208,9 @@ export class Viewer3D {
 
   _furnitureBounds() {
     const s = getState();
-    if (!s.furniture.length) return null;
+    if (!activeFurniture(s).length) return null;
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    for (const f of s.furniture) {
+    for (const f of activeFurniture(s)) {
       const r = Math.max(f.w, f.d) / 2;
       minX = Math.min(minX, f.x - r); maxX = Math.max(maxX, f.x + r);
       minY = Math.min(minY, f.y - r); maxY = Math.max(maxY, f.y + r);

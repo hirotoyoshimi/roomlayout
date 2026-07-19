@@ -3,7 +3,7 @@
 
 import {
   getState, mutate, mutateLive, beginUndoGroup, endUndoGroup,
-  genId, wallLength, nearestOnWall, wallsBounds,
+  genId, wallLength, nearestOnWall, wallsBounds, activeFurniture,
 } from './state.js';
 import { catalogItem } from './catalog.js';
 
@@ -106,7 +106,7 @@ export class Editor2D {
     const s = getState();
     if (!this.selection) return null;
     const { kind, id } = this.selection;
-    const list = kind === 'wall' ? s.walls : kind === 'opening' ? s.openings : s.furniture;
+    const list = kind === 'wall' ? s.walls : kind === 'opening' ? s.openings : activeFurniture(s);
     const obj = list.find(o => o.id === id);
     return obj ? { kind, obj } : null;
   }
@@ -121,7 +121,7 @@ export class Editor2D {
       x: snap(cx, GRID), y: snap(cy, GRID), rot: 0,
       w: c.w, d: c.d, h: c.h, color: c.color, elev: 0,
     };
-    mutate(s => s.furniture.push(item));
+    mutate(s => activeFurniture(s).push(item));
     this.setTool('select');
     this.setSelection({ kind: 'furniture', id: item.id });
   }
@@ -136,7 +136,8 @@ export class Editor2D {
       } else if (sel.kind === 'opening') {
         s.openings = s.openings.filter(o => o.id !== sel.obj.id);
       } else {
-        s.furniture = s.furniture.filter(f => f.id !== sel.obj.id);
+        const lay = s.layouts.find(l => l.id === s.activeLayoutId);
+        lay.furniture = lay.furniture.filter(f => f.id !== sel.obj.id);
       }
     });
     this.setSelection(null);
@@ -221,7 +222,9 @@ export class Editor2D {
       this.setSelection({ kind: hit.kind, id: hit.obj.id });
       beginUndoGroup();
       if (hit.kind === 'furniture') {
-        this.drag = { kind: 'furniture', item: hit.obj, ox: wx - hit.obj.x, oy: wy - hit.obj.y };
+        if (!hit.obj.locked) {
+          this.drag = { kind: 'furniture', item: hit.obj, ox: wx - hit.obj.x, oy: wy - hit.obj.y };
+        }
       } else if (hit.kind === 'wall') {
         this.drag = { kind: 'wall-move', wall: hit.obj, wx, wy, orig: { ...hit.obj } };
       } else if (hit.kind === 'opening') {
@@ -382,7 +385,9 @@ export class Editor2D {
         const f = real / dist;
         for (const w of s.walls) { w.x1 *= f; w.y1 *= f; w.x2 *= f; w.y2 *= f; }
         for (const o of s.openings) o.offset *= f;
-        for (const fu of s.furniture) { fu.x *= f; fu.y *= f; } // 位置のみ。サイズは実寸なので不変
+        for (const lay of s.layouts) {
+          for (const fu of lay.furniture) { fu.x *= f; fu.y *= f; } // 位置のみ。サイズは実寸なので不変
+        }
       }
     });
     this.onHint(`縮尺を設定しました（${cm}cm）。次は「🧱 壁を描く」で図面をなぞってください`);
@@ -394,8 +399,9 @@ export class Editor2D {
   _hitTest(wx, wy, sx, sy) {
     const s = getState();
     // 家具（後に描いたもの = 上にあるものを優先）
-    for (let i = s.furniture.length - 1; i >= 0; i--) {
-      const f = s.furniture[i];
+    const furn = activeFurniture(s);
+    for (let i = furn.length - 1; i >= 0; i--) {
+      const f = furn[i];
       if (pointInRect(wx, wy, f)) return { kind: 'furniture', obj: f };
     }
     // ドア・窓
@@ -423,7 +429,7 @@ export class Editor2D {
 
   _rotHandlePos() {
     const sel = this.getSelected();
-    if (!sel || sel.kind !== 'furniture') return null;
+    if (!sel || sel.kind !== 'furniture' || sel.obj.locked) return null;
     const f = sel.obj;
     const rad = f.rot * Math.PI / 180;
     const dist = f.d / 2 + 25 / this.view.s;
@@ -500,7 +506,7 @@ export class Editor2D {
     }
 
     // 家具
-    for (const f of s.furniture) {
+    for (const f of activeFurniture(s)) {
       this._drawFurniture(f);
     }
 
@@ -601,11 +607,21 @@ export class Editor2D {
     ctx.translate(cx, cy);
     ctx.rotate(f.rot * Math.PI / 180);
     const w = f.w * v.s, d = f.d * v.s;
-    ctx.fillStyle = hexWithAlpha(f.color, 0.55);
+    ctx.fillStyle = f.locked ? 'rgba(150,150,150,.35)' : hexWithAlpha(f.color, 0.55);
     ctx.strokeStyle = selected ? '#2f5c40' : shade(f.color, -30);
     ctx.lineWidth = selected ? 2.5 : 1.5;
+    if (f.locked) ctx.setLineDash([5, 3]);
     roundRect(ctx, -w / 2, -d / 2, w, d, Math.min(6, w / 5, d / 5));
     ctx.fill(); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 所有者マーカー(左上の点): 自分=青 / 同居人=紫
+    if (f.owner === 'me' || f.owner === 'roommate') {
+      ctx.fillStyle = f.owner === 'me' ? '#3d6ea5' : '#8a4fa8';
+      ctx.beginPath();
+      ctx.arc(-w / 2 + 7, -d / 2 + 7, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     if (v.s > 25 && Math.min(w, d) > 24) {
       ctx.fillStyle = '#3a352e';
