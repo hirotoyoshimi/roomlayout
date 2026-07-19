@@ -35,6 +35,11 @@ export const REAL_FURNITURE = [
     note: 'IKEA KALLAX シェルフユニット 77×147 ブラックブラウン (703.518.91) を横向き(サイドボード状)で使用',
   },
   {
+    type: 'muji_pulp_3', label: 'パルプボックス(横)', emoji: '📦',
+    w: 1.09, d: 0.29, h: 0.375, color: '#d6c8ad', shape: 'shelf',
+    note: '無印良品 パルプボードボックス・タテヨコA4・3段・ベージュ (4945247549195) を横置き。37.5×29×109',
+  },
+  {
     type: 'zinus_bed_sd', label: 'ベッドSD(ZINUS)', emoji: '🛏',
     w: 1.20, d: 1.95, h: 0.40, color: '#3a3a3e', shape: 'platform_bed',
     note: 'ZINUS Heavy Duty スチールフレーム18.2cm(ZJ-BF-07 SD ブラック)+ Nスリープ マットレス22cm。計40cm=窓際ベンチと同高',
