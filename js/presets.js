@@ -3,7 +3,7 @@
 //
 // 採寸値: 居室幅 2,940 / 窓側の壁〜水回りブロック 5,100 /
 // 掃き出し窓 2,275 / 玄関ドア 800 / 南東の隅に柱 680×680。
-// 東壁沿いは北から キッチン → 冷蔵庫置場(685) → 柱(540)。
+// 東壁沿いは北から キッチン(1,250×600×850) → 冷蔵庫置場(685) → 柱(540)。
 // 南の窓沿いに高さ40cmの造り付けベンチ。
 // 水回りブロックの奥行(約1.92m)のみ図の比率からの推定。
 //
@@ -46,24 +46,26 @@ export function tokyoRoomData() {
   ];
 
   // 動かせない設備(グレー表示・ドラッグ不可)。東壁沿いは北から
-  // キッチン → 冷蔵庫置場 → 柱 の順
+  // キッチン → 冷蔵庫置場 → 柱 が水回りの壁から隙間なく並ぶ
+  const KITCHEN_LEN = 1.25;   // 実測 125×60×85
+  const FRIDGE_LEN = 0.685;   // 実測 685
+  const PILLAR_E = 0.54;      // 実測 540角
   const fixed = [
     {
-      // キッチン(東壁沿い、水回りのすぐ南) 長さ約1.6m×奥行0.65
       id: genId('f'), type: 'custom', label: 'キッチン(固定)',
-      x: W - 0.325, y: 2.72, rot: 0, w: 0.65, d: 1.6, h: 0.85,
+      x: W - 0.30, y: SAN + KITCHEN_LEN / 2, rot: 0, w: 0.60, d: KITCHEN_LEN, h: 0.85,
       color: '#a8adb3', elev: 0, locked: true,
     },
     {
-      // 冷蔵庫置場(実測685、キッチンのすぐ南)
       id: genId('f'), type: 'custom', label: '冷蔵庫置場',
-      x: W - 0.34, y: 3.52 + 0.685 / 2, rot: 0, w: 0.68, d: 0.685, h: 1.8,
+      x: W - 0.34, y: SAN + KITCHEN_LEN + FRIDGE_LEN / 2, rot: 0, w: 0.68, d: FRIDGE_LEN, h: 1.8,
       color: '#c5c9cd', elev: 0, locked: true,
     },
     {
-      // 東壁の柱(実測540、冷蔵庫置場の南)。床から天井まで
+      // 床から天井までの柱
       id: genId('f'), type: 'custom', label: '柱(東)',
-      x: W - 0.27, y: 4.205 + 0.54 / 2, rot: 0, w: 0.54, d: 0.54, h: 2.4,
+      x: W - 0.27, y: SAN + KITCHEN_LEN + FRIDGE_LEN + PILLAR_E / 2, rot: 0,
+      w: PILLAR_E, d: PILLAR_E, h: 2.4,
       color: '#8f9296', elev: 0, locked: true,
     },
     {
