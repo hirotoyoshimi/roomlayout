@@ -91,14 +91,14 @@ body {
 .btn-row-sm button:hover { background: var(--accent-soft); }
 
 /* catalog */
-#catalog { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-#catalog button {
+#catalog, #catalog-real { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+#catalog button, #catalog-real button {
   padding: 8px 4px; border: 1px solid var(--border); border-radius: 8px;
   background: var(--panel); cursor: pointer; font-size: 11.5px;
   display: flex; flex-direction: column; align-items: center; gap: 3px;
 }
-#catalog button:hover { background: var(--accent-soft); }
-#catalog button .emoji { font-size: 18px; }
+#catalog button:hover, #catalog-real button:hover { background: var(--accent-soft); }
+#catalog button .emoji, #catalog-real button .emoji { font-size: 18px; }
 
 /* canvas area */
 #canvas-wrap { flex: 1; position: relative; min-width: 0; background: #edeae3; }

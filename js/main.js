@@ -4,7 +4,7 @@ import {
   getState, load, mutate, undo, redo, resetAll,
   exportJSON, importJSON, onChange, genId, wallLength, activeFurniture,
 } from './state.js';
-import { CATALOG } from './catalog.js';
+import { CATALOG, REAL_FURNITURE } from './catalog.js';
 import { Editor2D } from './editor2d.js';
 import { Viewer3D } from './viewer3d.js';
 import { detectWalls } from './autotrace.js';
@@ -74,13 +74,15 @@ function resetToolUI() {
 }
 
 // カタログ
-for (const c of CATALOG) {
+function catalogButton(c) {
   const btn = document.createElement('button');
   btn.innerHTML = `<span class="emoji">${c.emoji}</span>${c.label}`;
-  btn.title = `${Math.round(c.w * 100)}×${Math.round(c.d * 100)}×${Math.round(c.h * 100)}cm`;
+  btn.title = `${c.note ? c.note + '\n' : ''}${Math.round(c.w * 100)}×${Math.round(c.d * 100)}×${Math.round(c.h * 100)}cm`;
   btn.addEventListener('click', () => { editor.addFurniture(c.type); resetToolUI(); });
-  $('#catalog').appendChild(btn);
+  return btn;
 }
+for (const c of REAL_FURNITURE) $('#catalog-real').appendChild(catalogButton(c));
+for (const c of CATALOG) $('#catalog').appendChild(catalogButton(c));
 
 // ---------- レイアウト案の管理 ----------
 function renderLayoutUI() {

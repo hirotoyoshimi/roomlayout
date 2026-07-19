@@ -22,6 +22,17 @@ export const CATALOG = [
   { type: 'custom',   label: 'カスタム',    emoji: '➕', w: 1.00, d: 1.00, h: 1.00, color: '#b0b0b0', shape: 'box' },
 ];
 
+// 実物の家具(所有している・購入予定の実在アイテム)。寸法は実物どおり
+export const REAL_FURNITURE = [
+  {
+    type: 'kallax_4x4', label: 'KALLAX 147×147', emoji: '🟫',
+    w: 1.47, d: 0.39, h: 1.47, color: '#4a3c33', shape: 'shelf',
+    note: 'IKEA KALLAX シェルフユニット ブラックブラウン (103.518.89)',
+  },
+];
+
 export function catalogItem(type) {
-  return CATALOG.find(c => c.type === type) || CATALOG[CATALOG.length - 1];
+  return CATALOG.find(c => c.type === type)
+    || REAL_FURNITURE.find(c => c.type === type)
+    || CATALOG[CATALOG.length - 1];
 }
