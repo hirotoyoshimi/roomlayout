@@ -147,8 +147,7 @@ $('#btn-tokyo').addEventListener('click', () => {
   mutate(s => applyTokyoRoom(s));
   editor.centerView();
   $('#hint').textContent =
-    `東京の部屋(内寸 幅${TOKYO_ROOM.width}m×奥行${TOKYO_ROOM.length}m と推定)を読み込みました。` +
-    '実測したら「📐 実寸補正」で合わせられます';
+    `東京の部屋(実測ベース: 内寸 幅${TOKYO_ROOM.width}m×奥行${TOKYO_ROOM.length}m)を読み込みました`;
 });
 
 $('#btn-rescale').addEventListener('click', () => {
@@ -599,8 +598,7 @@ window.__app = { editor, viewer, getState };
   if (empty) {
     mutate(st => applyTokyoRoom(st), { undoable: false });
     $('#hint').textContent =
-      `東京の部屋(内寸 幅${TOKYO_ROOM.width}m×奥行${TOKYO_ROOM.length}m と推定)を読み込みました。` +
-      '寸法を実測したら「📐 実寸補正」で正確に合わせられます';
+      `東京の部屋(実測ベース: 内寸 幅${TOKYO_ROOM.width}m×奥行${TOKYO_ROOM.length}m)を読み込みました`;
   }
 }
 renderLayoutUI();
