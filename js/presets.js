@@ -2,7 +2,7 @@
 // 実測値入りの間取り図(2026-07 手書き採寸)+室内写真から書き起こし。
 //
 // 採寸値: 居室幅 2,940 / 窓側の壁〜水回りブロック 5,100 /
-// 掃き出し窓 2,275(+壁680) / 西壁のバルコニー開口 670 / 玄関ドア 800。
+// 掃き出し窓 2,275 / 玄関ドア 800 / 南東の隅に柱 680×680。
 // 東壁沿いは北から キッチン → 冷蔵庫置場(685) → 柱(540)。
 // 南の窓沿いに高さ40cmの造り付けベンチ。
 // 水回りブロックの奥行(約1.92m)のみ図の比率からの推定。
@@ -39,12 +39,10 @@ export function tokyoRoomData() {
     { id: genId('o'), wallId: north.id, type: 'door', offset: 0.5, width: 0.8, height: 2.0, sill: 0 },
     // 水回りへのドア(南壁・東寄り)
     { id: genId('o'), wallId: sanSouth.id, type: 'door', offset: 1.25, width: 0.7, height: 2.0, sill: 0 },
-    // 東面の窓(居室南東側)
-    { id: genId('o'), wallId: east.id, type: 'window', offset: 6.2, width: 1.5, height: 1.1, sill: 0.9 },
-    // 南の掃き出し窓(バルコニーへ) 実測2275。西端から、東側に壁680が残る
+    // 東面の窓(南東の柱のすぐ北)
+    { id: genId('o'), wallId: east.id, type: 'window', offset: 5.9, width: 0.85, height: 1.1, sill: 0.9 },
+    // 南の掃き出し窓(バルコニーへ) 実測2275。西端から、東側は南東の柱
     { id: genId('o'), wallId: south.id, type: 'window', offset: 1.14, width: 2.275, height: 2.0, sill: 0.02 },
-    // 西壁南寄りのバルコニー開口(実測670)
-    { id: genId('o'), wallId: west.id, type: 'door', offset: 6.64, width: 0.67, height: 1.9, sill: 0.05 },
   ];
 
   // 動かせない設備(グレー表示・ドラッグ不可)。東壁沿いは北から
@@ -63,9 +61,15 @@ export function tokyoRoomData() {
       color: '#c5c9cd', elev: 0, locked: true,
     },
     {
-      // 柱(実測540、冷蔵庫置場の南)。床から天井まで
-      id: genId('f'), type: 'custom', label: '柱',
+      // 東壁の柱(実測540、冷蔵庫置場の南)。床から天井まで
+      id: genId('f'), type: 'custom', label: '柱(東)',
       x: W - 0.27, y: 4.205 + 0.54 / 2, rot: 0, w: 0.54, d: 0.54, h: 2.4,
+      color: '#8f9296', elev: 0, locked: true,
+    },
+    {
+      // 南東の隅の柱(実測680×680)。床から天井まで
+      id: genId('f'), type: 'custom', label: '柱(南東)',
+      x: W - 0.34, y: L - 0.34, rot: 0, w: 0.68, d: 0.68, h: 2.4,
       color: '#8f9296', elev: 0, locked: true,
     },
     {
